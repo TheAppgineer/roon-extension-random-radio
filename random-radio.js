@@ -265,9 +265,11 @@ function on_stopped(zone, user_request) {
     }
 }
 
-function turn_roon_radio_off(zone) {
+function turn_roon_radio_off(zone, cb) {
     setTimeout(() => {
         transport.change_settings(zone, { auto_radio: false });
+
+        cb && cb();
     }, 500);
 }
 
@@ -283,11 +285,11 @@ function setup_stop_monitoring(zone) {
         if (zone.state == 'stopped') {
             on_stopped(zone);
         } else {
-            turn_roon_radio_off(zone);
-
-            // Only allow reactivation after playback stopped
-            on_zone_property_changed(zone.zone_id, { state: 'stopped' }, (zone) => {
-                setup_play_monitoring(zone);
+            turn_roon_radio_off(zone, () => {
+                // Only allow reactivation after playback stopped
+                on_zone_property_changed(zone.zone_id, { state: 'stopped' }, (zone) => {
+                    setup_play_monitoring(zone);
+                });
             });
         }
     });
@@ -305,10 +307,10 @@ function setup_play_monitoring(zone) {
         if (zone.state == 'playing') {
             setup_callbacks(radio_settings);
         } else {
-            turn_roon_radio_off(zone);
-
-            // And start our own
-            on_stopped(zone, true);
+            turn_roon_radio_off(zone, () => {
+                // And start our own
+                on_stopped(zone, true);
+            });
         }
     });
 }
