@@ -205,10 +205,15 @@ function makelayout(settings) {
         layout:    [],
         has_error: false
     };
+    let group = {
+        type:    "group",
+        title:   "Select the random mode for the available zones:",
+        items:   [],
+    };
 
     l.layout.push({
         type:    "dropdown",
-        title:   "Random Number Engine",
+        title:   "Random Number Generator",
         values:  [
             { title: "Native Math",         value: NATIVE_MATH    },
             { title: "Browser Crypto",      value: BROWSER_CRYPTO },
@@ -217,7 +222,7 @@ function makelayout(settings) {
         setting: "engine"
     });
 
-    l.layout.push({
+    group.items.push({
         type:    "zone",
         title:   "Zone",
         setting: "zone"
@@ -226,7 +231,7 @@ function makelayout(settings) {
     if (settings.zone && settings.zone.output_id) {
         let i = settings.zone.output_id;
 
-        l.layout.push({
+        group.items.push({
             type:    "dropdown",
             title:   "Random Mode",
             values:  [
@@ -237,6 +242,8 @@ function makelayout(settings) {
             setting: i
         });
     }
+
+    l.layout.push(group);
 
     return l;
 }
