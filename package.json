@@ -1,6 +1,6 @@
 {
     "name": "roon-extension-random-radio",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "description": "Roon Extension to play random tracks or albums",
     "main": "random-radio.js",
     "author": "The Appgineer",
