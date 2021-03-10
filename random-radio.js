@@ -39,7 +39,7 @@ var profiles = [];
 var roon = new RoonApi({
     extension_id:        'com.theappgineer.random-radio',
     display_name:        'Random Radio',
-    display_version:     '0.2.0',
+    display_version:     '0.2.1',
     publisher:           'The Appgineer',
     email:               'theappgineer@gmail.com',
     website:             'https://community.roonlabs.com/t/roon-extension-random-radio/35978',
@@ -412,6 +412,16 @@ function init(settings) {
     initialized = true;
 }
 
+function init_signal_handlers() {
+    const handle = function(signal) {
+        process.exit(0);
+    };
+
+    // Register signal handlers to enable a graceful stop of the container
+    process.on('SIGTERM', handle);
+    process.on('SIGINT', handle);
+}
+
 var svc_settings = new RoonApiSettings(roon, {
     get_settings: function(cb) {
         query_profiles(() => {
@@ -437,5 +447,7 @@ roon.init_services({
     required_services:   [ RoonApiTransport, RoonApiBrowse ],
     provided_services:   [ svc_settings, svc_status ]
 });
+
+init_signal_handlers();
 
 roon.start_discovery();
