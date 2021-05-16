@@ -1,11 +1,14 @@
-# Use an official node runtime as a parent image
-FROM node:12.16.3-alpine
+ARG build_arch=amd64
 
-COPY random-radio.js package.json LICENSE /home/node/
+FROM multiarch/alpine:${build_arch}-v3.12
+
+RUN addgroup -g 1000 node && adduser -u 1000 -G node -s /bin/sh -D node && apk add --no-cache nodejs
 
 WORKDIR /home/node
 
-RUN apk add --no-cache git && npm install && apk del git
+COPY random-radio.js package.json LICENSE /home/node/
+
+RUN apk add --no-cache git npm && npm install && apk del git npm
 
 USER node
 
